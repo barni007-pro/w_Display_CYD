@@ -20,7 +20,7 @@ die ohne Lötarbeiten umgesetzt werden können.
 - 
 - 
 
-![fertiges Gerät]() <br> 
+![fertiges Gerät](IMG_20250106_201539.jpg_compressed.JPEG) <br> 
 ![fertiges Gerät]() 
 
 ## Arduino Library:
