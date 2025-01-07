@@ -42,3 +42,29 @@ In diesem Fall muss die User_Setup_USB1.h in User_Setup.h umbenannt und dann in 
 
 ### Variante mit zwei USB Schnittstelle (USB-2.0-Micro-Buchse + USB-3.1-Typ-C-Buchse)
 In diesem Fall muss die User_Setup_USB2.h in User_Setup.h umbenannt und dann in das libraries\TFT_eSPI kopiert werden.
+
+## Benutzer Konfiguration des Kalenders/Uhr:
+Um die Konfiguration des Kalenders/Uhr möglichst einfach zu gestalten, wird diese auf einer SD Karte hinterlegt. <br>
+Auf der SD Karte muss die Datei config.txt gespeichert werden. <br>
+Diese enthält dann folgede Einstellungen:
+
+### ssid=
+### password=
+### tzinfo=
+### ntpserver=
+### tformat=
+### brightness=
+### function=
+### latitude=
+### longitude=
+### WeekDays=
+### MonthName=
+### Translate=
+### birthday=
+### Year=
+### holiday0=
+### holiday1=
+### holiday2=
+### schoolhol0=
+### schoolhol1=
+### schoolhol2=
