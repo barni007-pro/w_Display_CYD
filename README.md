@@ -49,14 +49,23 @@ Auf der SD Karte muss die Datei config.txt gespeichert werden. <br>
 Diese enthält dann folgede Einstellungen:
 
 ### ssid=
+Die SSID des WiFi Netzwerkes.
 ### password=
+Das Passwort des WiFi Netzwerkes.
 ### tzinfo=
+Die Zeitzone und Sommer-/Winterzeit Infos, um die lokale Zeit ihres Standortes zu ermitteln.
 ### ntpserver=
+Der NTP Zeitserver, von welchem die genaue aktuelle Zeit ermittelt wird.
 ### tformat=
+Anzeige der Uhrzeit im 12 oder 24 Stunden Formats. (12/24)
 ### brightness=
+Die Start-Helligkeit der Display Hintergrundbeleuchtung. (0-255)
 ### function=
+Mit welcher Anzeige soll die Software beginnen. (0: Kalender, 1: Uhr)
 ### latitude=
+Breitengrad des Standorts, um den Sonnenauf und -Untergang zu ermitteln.
 ### longitude=
+Längengrad des Standorts, um den Sonnenauf und -Untergang zu ermitteln.
 ### WeekDays=
 ### MonthName=
 ### Translate=
