@@ -32,3 +32,7 @@ Library um mit dem Touchscreen zu kommunizieren.
 - TFT_eSPI.h <br>
 Grapfik Library um das LCD Display zu steuern.
 
+## Konfiguration der TFT_eSPI.h Library:
+Die Library kann für verschiedene Typen von Displays eingesetzt werden. <br>
+Das heap-Yellow-Display gibt es in zwei unterschiedlichen Varianten, mit leicht unterschiedlichen Displays. <br>
+Daher ist es notwendig, die Library vor dem Compilieren anzupassen. <br>
