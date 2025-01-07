@@ -34,5 +34,9 @@ Grapfik Library um das LCD Display zu steuern.
 
 ## Konfiguration der TFT_eSPI.h Library:
 Die Library kann für verschiedene Typen von Displays eingesetzt werden. <br>
-Das heap-Yellow-Display gibt es in zwei unterschiedlichen Varianten, mit leicht unterschiedlichen Displays. <br>
-Daher ist es notwendig, die Library vor dem Compilieren anzupassen. <br>
+Das Cheap-Yellow-Display gibt es in zwei unterschiedlichen Varianten, mit leicht unterschiedlichen Displays. <br>
+Daher ist es notwendig, die Library vor dem Compilieren anzupassen.
+
+### Variante mit einer USB Schnittstelle (USB-2.0-Micro-Buchse)
+
+### Variante mit zwei USB Schnittstelle (USB-2.0-Micro-Buchse + USB-3.1-Typ-C-Buchse)
