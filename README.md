@@ -73,12 +73,18 @@ Auflistung der Monatstage um diese an eine andere Sprache anzupassen.
 ### Translate=
 Eine weitere Auflistung von Anzeigen um diese an eine andere Sprache anzupassen. 
 ### birthday=
-Die Geburtstagsliste. (Datum-Name)
+Die Geburtstagsliste. (Datum-Name,...)
 ### Year=
-Die in der Konfiguration gespeicherten Jahreslisten. Es müssen immer 3 aufeinander folgende Jahre sein. (Jahr1,Jahr2,Jahr3)
+Die in der Konfiguration gespeicherten Jahreslisten. Es müssen immer 3 aufeinander folgende Jahre sein. (Jahr0,Jahr1,Jahr2)
 ### holiday0=
+Liste der Feiertage für das Jahr0. (Datum-Beschreibung,...)
 ### holiday1=
+Liste der Feiertage für das Jahr1. (Datum-Beschreibung,...)
 ### holiday2=
+Liste der Feiertage für das Jahr2. (Datum-Beschreibung,...)
 ### schoolhol0=
+Liste der Schulferien für das Jahr0. (Datum,...) 
 ### schoolhol1=
+Liste der Schulferien für das Jahr1. (Datum,...)
 ### schoolhol2=
+Liste der Schulferien für das Jahr2. (Datum,...)
