@@ -88,3 +88,6 @@ Liste der Schulferien für das Jahr0. (Datum,...)
 Liste der Schulferien für das Jahr1. (Datum,...)
 ### schoolhol2=
 Liste der Schulferien für das Jahr2. (Datum,...)
+
+## Bedienung:
+
