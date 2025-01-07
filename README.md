@@ -89,5 +89,13 @@ Liste der Schulferien für das Jahr1. (Datum,...)
 ### schoolhol2=
 Liste der Schulferien für das Jahr2. (Datum,...)
 
-## Bedienung:
-
+## Touch Bedienung:
+![Bedienung](Touch_Kal.jpg)  <br>
+### GRÜN
+Wechselt zur Kalender Ansicht auf aktuellen Monat.
+### BLAU
+Wechselt zum nächsten Kalender Monat schrittweise rauf oder runter.
+### GELB
+Wechselt zur Uhr Ansicht.
+### ROT
+Stellt die Display Hintergrund Beleuchtung ein.
