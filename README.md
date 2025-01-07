@@ -57,7 +57,7 @@ Die Zeitzone und Sommer-/Winterzeit Infos, um die lokale Zeit des Standortes zu 
 ### ntpserver=
 Der NTP Zeitserver, von welchem die genaue aktuelle Zeit ermittelt wird.
 ### tformat=
-Anzeige der Uhrzeit im 12 oder 24 Stunden Formats. (12/24)
+Anzeige der Uhrzeit im 12 oder 24 Stunden Format. (12/24)
 ### brightness=
 Die Start-Helligkeit der Display Hintergrundbeleuchtung. (0-255)
 ### function=
