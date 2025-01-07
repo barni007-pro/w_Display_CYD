@@ -25,10 +25,10 @@ die ohne Lötarbeiten umgesetzt werden können.
 ![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) 
 
 ## Arduino Library:
-- SPI.h
+- SPI.h <br>
 Ist für die Kommunikation mit der SPI Schnittstelle notwendig um das Display anzusprechen.
-- XPT2046_Touchscreen.h
+- XPT2046_Touchscreen.h <br>
 Library um mit dem Touchscreen zu kommunizieren.
-- TFT_eSPI.h
+- TFT_eSPI.h <br>
 Grapfik Library um das LCD Display zu steuern.
 
