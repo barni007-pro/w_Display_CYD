@@ -12,13 +12,14 @@ die ohne Lötarbeiten umgesetzt werden können.
  - Anzeige von Schulferien
  - Konfiguration über config.txt File auf eine Mikro SD Karte
  - Anzeige einer Uhr mit Sonnen-Aufgang und -Untergang
+ - Frei konfigurierbar auch für andere Zeitzonen und Standorte (SD-Karte)
 
 ![fertiges Gerät](IMG_20250106_183430.jpg_compressed.JPEG) <br>
 ![fertiges Gerät](IMG_20250106_183649.jpg_compressed.JPEG)
 
-## Hardware:
-- 
-- 
+## Hardware Tutorial:
+- https://randomnerdtutorials.com/cheap-yellow-display-esp32-2432s028r/
+- https://randomnerdtutorials.com/esp32-cheap-yellow-display-cyd-pinout-esp32-2432s028r/
 
 ![fertiges Gerät](IMG_20250106_201539.jpg_compressed.JPEG) <br> 
 ![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) 
