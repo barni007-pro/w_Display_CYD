@@ -67,10 +67,15 @@ Breitengrad des Standorts, um den Sonnenauf und -Untergang zu ermitteln.
 ### longitude=
 Längengrad des Standorts, um den Sonnenauf und -Untergang zu ermitteln.
 ### WeekDays=
+Auflistung der Wochentage um diese an eine andere Sprache anzupassen.
 ### MonthName=
+Auflistung der Monatstage um diese an eine andere Sprache anzupassen.
 ### Translate=
+Eine weitere Auflistung von Anzeigen um diese an eine andere Sprache anzupassen. 
 ### birthday=
+Die Geburtstagsliste. (Datum-Name)
 ### Year=
+Die in der Konfiguration gespeicherten Jahreslisten. Es müssen immer 3 aufeinander folgende Jahre sein. (Jahr1,Jahr2,Jahr3)
 ### holiday0=
 ### holiday1=
 ### holiday2=
