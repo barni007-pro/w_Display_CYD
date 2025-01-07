@@ -7,12 +7,12 @@ Es ist sehr einfach aufzubauen, da das Projekt fertige Komponenten verwendet, <b
 die ohne Lötarbeiten umgesetzt werden können.
 
 ## Funktionen:
- - Anzeige der Feiertage
- - Anzeige von Geburtstagen oder anderen Jahrestagen
- - Anzeige von Schulferien
- - Konfiguration über config.txt File auf eine Mikro SD Karte
- - Anzeige einer Uhr mit Sonnen-Aufgang und -Untergang
- - Frei konfigurierbar auch für andere Zeitzonen und Standorte (SD-Karte)
+ - Anzeige der Feiertage.
+ - Anzeige von Geburtstagen oder anderen Jahrestagen.
+ - Anzeige von Schulferien.
+ - Konfiguration über config.txt File auf eine Mikro SD Karte.
+ - Anzeige einer Uhr mit Sonnen-Aufgang und -Untergang.
+ - Frei konfigurierbar auch für andere Zeitzonen und Standorte (SD-Karte).
 
 ![fertiges Gerät](IMG_20250106_183430.jpg_compressed.JPEG) <br>
 ![fertiges Gerät](IMG_20250106_183649.jpg_compressed.JPEG)
@@ -25,5 +25,10 @@ die ohne Lötarbeiten umgesetzt werden können.
 ![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) 
 
 ## Arduino Library:
-- 
+- SPI.h
+Ist für die Kommunikation mit der SPI Schnittstelle notwendig um das Display anzusprechen.
+- XPT2046_Touchscreen.h
+Library um mit dem Touchscreen zu kommunizieren.
+- TFT_eSPI.h
+Grapfik Library um das LCD Display zu steuern.
 
