@@ -38,5 +38,7 @@ Das Cheap-Yellow-Display gibt es in zwei unterschiedlichen Varianten, mit leicht
 Daher ist es notwendig, die Library vor dem Compilieren anzupassen.
 
 ### Variante mit einer USB Schnittstelle (USB-2.0-Micro-Buchse)
+In diesem Fall muss die User_Setup_USB1.h in User_Setup.h umbenannt und dann in das libraries\TFT_eSPI kopiert werden.
 
 ### Variante mit zwei USB Schnittstelle (USB-2.0-Micro-Buchse + USB-3.1-Typ-C-Buchse)
+In diesem Fall muss die User_Setup_USB2.h in User_Setup.h umbenannt und dann in das libraries\TFT_eSPI kopiert werden.
