@@ -1,6 +1,8 @@
 # w_Display_CYD
 A calendar on a CYD (ESP32-Cheap-Yellow-Display)
 
+English Version | Deutsche Version
+
 ## Kalender auf einem ESP32-Cheap-Yellow-Display:
 Dieses Projekt basiert auf Arduino und läuft auf einem ESP32 Mikrocontroller. <br>
 Es ist sehr einfach aufzubauen, da das Projekt fertige Komponenten verwendet, <br>
