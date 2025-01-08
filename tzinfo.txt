@@ -1,0 +1,33 @@
+Europa
+- Deutschland (Berlin): CET-1CEST,M3.5.0/02:00:00,M10.5.0/03:00:00
+- Frankreich (Paris): CET-1CEST,M3.5.0/02:00:00,M10.5.0/03:00:00
+- Spanien (Madrid): CET-1CEST,M3.5.0/02:00:00,M10.5.0/03:00:00
+- Italien (Rom): CET-1CEST,M3.5.0/02:00:00,M10.5.0/03:00:00
+- Vereinigtes Königreich (London): GMT0BST,M3.5.0/01:00:00,M10.5.0/02:00:00
+Nordamerika
+- USA (Ostküste, New York): EST5EDT,M3.2.0/02:00:00,M11.1.0/02:00:00
+- USA (Westküste, Los Angeles): PST8PDT,M3.2.0/02:00:00,M11.1.0/02:00:00
+- Kanada (Toronto): EST5EDT,M3.2.0/02:00:00,M11.1.0/02:00:00
+- Kanada (Vancouver): PST8PDT,M3.2.0/02:00:00,M11.1.0/02:00:00
+- Mexiko (Mexiko-Stadt): CST6CDT,M4.1.0/02:00:00,M10.5.0/02:00:00
+Asien
+- Japan (Tokio): JST-9
+- China (Shanghai): CST-8
+- Indien (Kolkata): IST-5:30
+- Südkorea (Seoul): KST-9
+- Singapur: SGT-8
+Australien
+- Sydney: AEST-10AEDT,M10.1.0/02:00:00,M4.1.0/03:00:00
+- Melbourne: AEST-10AEDT,M10.1.0/02:00:00,M4.1.0/03:00:00
+- Brisbane: AEST-10
+- Perth: AWST-8
+Südamerika
+- Brasilien (São Paulo): BRT-3BRST,M11.1.0/00:00:00,M2.3.0/00:00:00
+- Argentinien (Buenos Aires): ART-3
+- Chile (Santiago): CLT-4CLST,M9.1.6/24:00:00,M4.1.6/24:00:00
+- Kolumbien (Bogotá): COT-5
+Afrika
+- Südafrika (Johannesburg): SAST-2
+- Ägypten (Kairo): EET-2EEST,M4.5.5/00:00:00,M9.5.5/00:00:00
+- Nigeria (Lagos): WAT-1
+- Kenia (Nairobi): EAT-3
