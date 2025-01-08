@@ -22,6 +22,7 @@ that can be implemented without soldering.
 ## Hardware Tutorial:
 - https://randomnerdtutorials.com/cheap-yellow-display-esp32-2432s028r/
 - https://randomnerdtutorials.com/esp32-cheap-yellow-display-cyd-pinout-esp32-2432s028r/
+- https://github.com/paelzer/ESP32-Cheap-Yellow-Display-Documentation-DE
 
 ![finished device](IMG_20250106_201539.jpg_compressed.JPEG) <br> 
 ![finished device](IMG_20250106_201550.jpg_compressed.JPEG) 
