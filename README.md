@@ -56,6 +56,7 @@ Die SSID des WiFi Netzwerkes.
 Das Passwort des WiFi Netzwerkes.
 ### tzinfo=
 Die Zeitzone und Sommer-/Winterzeit Infos, um die lokale Zeit des Standortes zu ermitteln.
+[Beispiele](tzinfo.txt]
 ### ntpserver=
 Der NTP Zeitserver, von welchem die genaue aktuelle Zeit ermittelt wird.
 ### tformat=
