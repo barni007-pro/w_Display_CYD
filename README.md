@@ -107,3 +107,8 @@ Stellt die Display Hintergrund Beleuchtung ein.
 
 ## YouTube Link:
 https://www.youtube.com/watch?v=C9uFmEZfyEc
+
+## ESP Web Tools:
+Mit diesem Web Tool kann das CYD mit der aktuellen Firmware geflasht werden.  <br>
+Bitte wähle USB1 für die HW Variante mit einer USB Schnittstelle und USB2 für die Variante mit zwei USB Schnittstellen. <br>
+[Flash mit ESP Web Tools](https://7soft.de/esp_w_display_cyd/flash_x.html)
