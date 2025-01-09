@@ -108,9 +108,9 @@ Die Geburtstagsliste. (Datum-Name,...)
 Die in der Konfiguration gespeicherten Jahreslisten. Es müssen immer 3 aufeinander folgende Jahre sein. (Jahr0,Jahr1,Jahr2)
 ### holiday0=
 Liste der Feiertage für das Jahr0. (Datum-Beschreibung,...) <br>
-[Liste der Bundesländer für Deutschland 2025](holliday_2025)
-[Liste der Bundesländer für Deutschland 2026](holliday_2026)
-[Liste der Bundesländer für Deutschland 2027](holliday_2027)
+[Liste der Bundesländer für Deutschland 2025](holliday_2025.txt) <br>
+[Liste der Bundesländer für Deutschland 2026](holliday_2026.txt) <br>
+[Liste der Bundesländer für Deutschland 2027](holliday_2027.txt)
 ### holiday1=
 Liste der Feiertage für das Jahr1. (Datum-Beschreibung,...)
 ### holiday2=
