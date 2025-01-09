@@ -1,0 +1,47 @@
+Baden-Württemberg
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,10.3-Tag der D. Einheit,11.1-Allerheiligen,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Bayern
+1.1-Neujahr,1.6-Heilige Drei Könige,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,8.15-Mariä Himmelfahrt,10.3-Tag der D. Einheit,11.1-Allerheiligen,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Berlin
+1.1-Neujahr,3.8-Internationaler Frauentag,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Brandenburg
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.16-Pfingstsonntag,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Bremen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Hamburg
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Hessen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,10.3-Tag der D. Einheit,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Mecklenburg-Vorpommern
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Niedersachsen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Nordrhein-Westfalen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,10.3-Tag der D. Einheit,11.1-Allerheiligen,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Rheinland-Pfalz
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,10.3-Tag der D. Einheit,11.1-Allerheiligen,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Saarland
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,5.27-Fronleichnam,8.15-Mariä Himmelfahrt,10.3-Tag der D. Einheit,11.1-Allerheiligen,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Sachsen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,11.17-Buß- und Bettag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Sachsen-Anhalt
+1.1-Neujahr,1.6-Heilige Drei Könige,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Schleswig-Holstein
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
+
+Thüringen
+1.1-Neujahr,3.26-Karfreitag,3.28-Ostern,3.29-Ostermontag,5.1-Tag der Arbeit,5.6-Christi Himmelfahrt,5.17-Pfingstmontag,9.20-Weltkindertag,10.3-Tag der D. Einheit,10.31-Reformationstag,12.25-1.Weihnachtsfeiertag,12.26-2.Weihnachtsfeiertag
