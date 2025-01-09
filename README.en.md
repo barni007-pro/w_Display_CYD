@@ -107,3 +107,9 @@ Adjusts the display backlight brightness.
 
 ## YouTube Link:
 https://www.youtube.com/watch?v=C9uFmEZfyEc
+
+## ESP Web Tools:
+With this web tool, you can flash the CYD with the latest firmware.  <br>
+Please select USB1 for the hardware variant with one USB interface and USB2 for the variant with two USB interfaces. <br>
+[Flash mit ESP Web Tools](https://7soft.de/esp_w_display_cyd/flash_x.html)
+
