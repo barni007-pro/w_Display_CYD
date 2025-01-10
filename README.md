@@ -109,12 +109,12 @@ Die in der Konfiguration gespeicherten Jahreslisten. Es müssen immer 3 aufeinan
 ### holiday0=
 Liste der Feiertage für das Jahr0. (Datum-Beschreibung,...) <br>
 [Liste der Bundesländer für Deutschland 2025](holiday_2025.txt) <br>
-[Liste der Bundesländer für Deutschland 2026](holiday_2026.txt) <br>
-[Liste der Bundesländer für Deutschland 2027](holiday_2027.txt)
 ### holiday1=
-Liste der Feiertage für das Jahr1. (Datum-Beschreibung,...)
+Liste der Feiertage für das Jahr1. (Datum-Beschreibung,...) <br>
+[Liste der Bundesländer für Deutschland 2026](holiday_2026.txt)
 ### holiday2=
-Liste der Feiertage für das Jahr2. (Datum-Beschreibung,...)
+Liste der Feiertage für das Jahr2. (Datum-Beschreibung,...) <br>
+[Liste der Bundesländer für Deutschland 2027](holiday_2027.txt)
 ### schoolhol0=
 Liste der Schulferien für das Jahr0. (Datum,...) 
 ### schoolhol1=
