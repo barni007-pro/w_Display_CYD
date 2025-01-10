@@ -134,7 +134,7 @@ Switches to the clock view.
 Adjusts the display backlight brightness.
 
 ## YouTube Link:
-https://www.youtube.com/watch?v=C9uFmEZfyEc
+[![Watch the video](https://img.youtube.com/vi/C9uFmEZfyEc/maxresdefault.jpg)](https://youtu.be/C9uFmEZfyEc)
 
 ## ESP Web Tools:
 With this web tool, you can flash the CYD with the latest firmware.  <br>
