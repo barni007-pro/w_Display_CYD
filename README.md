@@ -135,6 +135,7 @@ Stellt die Display Hintergrund Beleuchtung ein.
 
 ## YouTube Link:
 https://www.youtube.com/watch?v=C9uFmEZfyEc
+[![Watch the video](https://img.youtube.com/vi/C9uFmEZfyEc/maxresdefault.jpg)](https://youtu.be/C9uFmEZfyEc)
 
 ## ESP Web Tools:
 Mit diesem Web Tool kann das CYD mit der aktuellen Firmware geflasht werden.  <br>
