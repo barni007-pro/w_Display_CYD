@@ -108,13 +108,13 @@ The birthday list. (Date-Name,...)
 The year lists stored in the configuration. There must always be 3 consecutive years. (Year0, Year1, Year2)
 ### holiday0=
 List of public holidays for Year0. (Date-Description,...) <br>
-[List of federal states of Germany 2025](holiday_2025.txt) <br>
-[List of federal states of Germany 2026](holiday_2026.txt) <br>
-[List of federal states of Germany 2027](holiday_2027.txt)
+[List of federal states of Germany 2025](holiday_2025.txt)
 ### holiday1=
-List of public holidays for Year1. (Date-Description,...)
+List of public holidays for Year1. (Date-Description,...) <br>
+[List of federal states of Germany 2026](holiday_2026.txt)
 ### holiday2=
-List of public holidays for Year2. (Date-Description,...)
+List of public holidays for Year2. (Date-Description,...) <br>
+[List of federal states of Germany 2027](holiday_2027.txt)
 ### schoolhol0=
 List of school holidays for Year0. (Date,...) 
 ### schoolhol1=
