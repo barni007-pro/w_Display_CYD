@@ -548,7 +548,7 @@ void setup()
   // Clear the screen before writing to it
   tft.fillScreen(TFT_BLACK);
   tft.setFreeFont(&seven_regular11pt7b);
-  tft.drawString("CALENDAR V1.0", 0, 0);
+  tft.drawString("CALENDAR V1.1", 0, 0);
   tft.setTextFont(1);
 
 
@@ -621,12 +621,22 @@ void loop()
     // LOCAL Date TT.MO.YYYY
     sprintf(dateString, "%02d.%02d.%04d", localtime.tm_mday, localtime.tm_mon + 1, localtime.tm_year + 1900);
     // Berechne die Zeitzone basierend auf der Differenz zwischen lokaler Zeit und UTC-Zeit 
-    timeZone = (mktime(&localtime) - mktime(utctime)) / 3600; // Differenz in Stunden
+
+	  //timeZone = (mktime(&localtime) - mktime(utctime)) / 3600; // Differenz in Stunden
+    
+	  struct tm localtime_copy = localtime;
+	  localtime_copy.tm_isdst = 0; // DST deaktivieren
+	  timeZone = (mktime(&localtime_copy) - mktime(utctime)) / 3600;
+	
     sun.setPosition(latitude.toDouble(), longitude.toDouble(), timeZone);
     sun.setCurrentDate(localtime.tm_year + 1900, localtime.tm_mon + 1, localtime.tm_mday);
     // Sun min
-    sunrise = sun.calcSunrise(); 
-    sunset = sun.calcSunset();
+    // sunrise = sun.calcSunrise(); 
+    // sunset = sun.calcSunset();
+    
+	  sunrise = sun.calcSunrise();
+	  sunset = sun.calcSunset();
+
     // Sun rise/set HH:MM
     int sunrisehours = int(sunrise / 60); 
     int sunriseminutes = int((sunrise / 60 - sunrisehours) * 60);
@@ -910,5 +920,6 @@ void loop()
     delay(300);
   }
 }
+
 
 //end
