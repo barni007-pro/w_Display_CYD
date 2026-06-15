@@ -51,7 +51,8 @@ SOFTWARE.
 - https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display
 
 ![fertiges Gerät](IMG_20250106_201539.jpg_compressed.JPEG) <br> 
-![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) 
+![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) <br>
+![fertiges Gerät](IMG_20260615_181132.jpg_compressed.JPEG)
 
 ## Arduino Library:
 - SPI.h <br>
