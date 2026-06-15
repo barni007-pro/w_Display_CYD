@@ -121,6 +121,14 @@ Liste der Schulferien für das Jahr0. (Datum,...)
 Liste der Schulferien für das Jahr1. (Datum,...)
 ### schoolhol2=
 Liste der Schulferien für das Jahr2. (Datum,...)
+### layout=
+CYD Macro Pad Tastatur Layout US/DE
+### key1= ... key8=
+Macro Pad-Beschriftung und Pad-Macro <br>
+Beschriftung (einzeilig "Text") (zweizeilig "Text1/Text2") <br>
+Trennung zwischen Beschriftung und Macro "," <br>
+Macro (Zeichen oder [TAB] [RET]) <br>
+Beispiel: key1=Win/Passw,user[TAB]password[RET]
 
 ## Touch Bedienung:
 ![Bedienung](Touch_Kal.jpg)  <br>
