@@ -137,7 +137,7 @@ Wechselt zur Kalender Ansicht auf aktuellen Monat.
 ### BLAU
 Wechselt zum nächsten Kalender Monat schrittweise rauf oder runter.
 ### GELB
-Wechselt zur Uhr Ansicht.
+Wechselt zur Uhr Ansicht. In der Uhr Ansicht wird zum Macro-Pad gewechselt
 ### ROT
 Stellt die Display Hintergrund Beleuchtung ein.
 
