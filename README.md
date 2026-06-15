@@ -132,10 +132,16 @@ Trennung zwischen Beschriftung und Macro "," <br>
 Macro (Zeichen oder [TAB] [RET]) <br>
 Beispiel: key1=Win/Passw,user[TAB]password[RET] <br>
 ### Makro-Tasten konfigurieren (`key1` bis `key8`)
-Die Belegung der physikalischen Tasten wird direkt in der `config.txt` definiert. Jede Taste benötigt eine Beschriftung für das Display und die eigentliche Makro-Sequenz, getrennt durch ein Komma `,`.
+Die Belegung der physikalischen Tasten wird direkt in der `config.txt` definiert. Jede Taste benötigt eine Beschriftung für das Display und die eigentliche Makro-Sequenz, getrennt durch ein Komma `,`. <br>
 **Syntax:**
 ```text
 keyX=Beschriftung,Makro-Sequenz
+```
+**Beispiel:**
+```text
+key1=Win/Passw,user[TAB]password[RET]
+```
+
 Alle Steuercodes: <br>
 [TAB],Drückt die Tabulator-Taste <br>
 [RET],Drückt die Eingabetaste (Enter / Return) <br>
