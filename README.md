@@ -125,13 +125,8 @@ Liste der Schulferien für das Jahr1. (Datum,...)
 Liste der Schulferien für das Jahr2. (Datum,...)
 ### layout=
 CYD Macro Pad Tastatur Layout US/DE
-### key1= ... key8=
-Macro Pad-Beschriftung und Pad-Macro <br>
-Beschriftung (einzeilig "Text") (zweizeilig "Text1/Text2") <br>
-Trennung zwischen Beschriftung und Macro "," <br>
-Macro (Zeichen oder [TAB] [RET]) <br>
-Beispiel: key1=Win/Passw,user[TAB]password[RET] <br>
-### Makro-Tasten konfigurieren (`key1` bis `key8`)
+### key1= ... Key8= 
+**Makro-Tasten konfigurieren (`key1` bis `key8`)**
 Die Belegung der physikalischen Tasten wird direkt in der `config.txt` definiert. <br>
 Jede Taste benötigt eine Beschriftung für das Display und die eigentliche Makro-Sequenz, getrennt durch ein Komma `,`. <br>
 Die Beschriftung kann einzelig oder zweizeilig erfolgen (erste Zeile/zweite Zeile) <br>
@@ -145,12 +140,12 @@ key1=Win/Passw,user[TAB]password[RET]
 ```
 **Alle Steuercodes**
 ```text
-[TAB],Drückt die Tabulator-Taste <br>
-[RET],Drückt die Eingabetaste (Enter / Return) <br>
-[F01]-[F24],Drückt die reinen Funktionstasten F1 bis F24 <br>
-[S01]-[S24],Drückt Shift + Funktionstaste (z. B. [S13] für Shift+F13) <br>
-[C01]-[C24],Drückt Strg (Control) + Funktionstaste (z. B. [C13] für Strg+F13) <br>
-[A01]-[A24],Drückt Alt + Funktionstaste (z. B. [A13] für Alt+F13) <br>
+[TAB],Drückt die Tabulator-Taste
+[RET],Drückt die Eingabetaste (Enter / Return)
+[F01]-[F24],Drückt die reinen Funktionstasten F1 bis F24
+[S01]-[S24],Drückt Shift + Funktionstaste (z. B. [S13] für Shift+F13)
+[C01]-[C24],Drückt Strg (Control) + Funktionstaste (z. B. [C13] für Strg+F13)
+[A01]-[A24],Drückt Alt + Funktionstaste (z. B. [A13] für Alt+F13)
 ```
 
 ## Touch Bedienung:
