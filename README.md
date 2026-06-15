@@ -130,7 +130,14 @@ Macro Pad-Beschriftung und Pad-Macro <br>
 Beschriftung (einzeilig "Text") (zweizeilig "Text1/Text2") <br>
 Trennung zwischen Beschriftung und Macro "," <br>
 Macro (Zeichen oder [TAB] [RET]) <br>
-Beispiel: key1=Win/Passw,user[TAB]password[RET]
+Beispiel: key1=Win/Passw,user[TAB]password[RET] <br>
+Alle Steuercodes: <br>
+[TAB],Drückt die Tabulator-Taste <br>
+[RET],Drückt die Eingabetaste (Enter / Return) <br>
+[F01]-[F24],Drückt die reinen Funktionstasten F1 bis F24 <br>
+[S01]-[S24],Drückt Shift + Funktionstaste (z. B. [S13] für Shift+F13) <br>
+[C01]-[C24],Drückt Strg (Control) + Funktionstaste (z. B. [C13] für Strg+F13) <br>
+[A01]-[A24],Drückt Alt + Funktionstaste (z. B. [A13] für Alt+F13) <br>
 
 ## Touch Bedienung:
 ![Bedienung](Touch_Kal.jpg)  <br>
