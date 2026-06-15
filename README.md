@@ -126,7 +126,7 @@ Liste der Schulferien für das Jahr2. (Datum,...)
 ### layout=
 CYD Macro Pad Tastatur Layout US/DE
 ### key1= ... Key8= 
-**Makro-Tasten konfigurieren (`key1` bis `key8`)**
+**Makro-Tasten konfigurieren (`key1` bis `key8`)** <br>
 Die Belegung der physikalischen Tasten wird direkt in der `config.txt` definiert. <br>
 Jede Taste benötigt eine Beschriftung für das Display und die eigentliche Makro-Sequenz, getrennt durch ein Komma `,`. <br>
 Die Beschriftung kann einzelig oder zweizeilig erfolgen (erste Zeile/zweite Zeile) <br>
