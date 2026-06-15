@@ -40,6 +40,7 @@ SOFTWARE.
  - Configuration via config.txt file on a micro SD card.
  - Display of a clock with sunrise and sunset times.
  - Freely configurable for other time zones and locations (SD card).
+ - Bluetooth macro pad for sending keyboard macros.
 
 ![finished device](IMG_20250106_183430.jpg_compressed.JPEG) <br>
 ![finished device](IMG_20250106_183649.jpg_compressed.JPEG) <br>
