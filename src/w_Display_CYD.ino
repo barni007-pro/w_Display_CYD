@@ -13,6 +13,8 @@
 #include <Wire.h>
 #include "seven_regular11pt7b.h"
 #include "seven_regular31pt7b.h"
+//#include <NimBLEDevice.h>
+#include <HijelHID_BLEKeyboard.h>
 
 //Touch Pins
 #define XPT2046_IRQ 36
@@ -61,7 +63,23 @@ int event_tm_hour = -1;
 int event_tm_min = -1;
 int event_tm_sec = -1;
 
-int function = 0; //0:CAL 1:CLOCK
+int function = 0; //0:CAL 1:CLOCK 2:KEYBOARD
+
+// WIEDER HINZUGEFÜGT: Instanz für BLE Keyboard
+HijelHID_BLEKeyboard bleKeyboard("CYD MacroPad", "Espressif", 100);
+
+// Array zum Speichern der 8 Makro-Strings von der SD-Karte
+String macroStrings[8] = {"", "", "", "", "", "", "", ""};
+// Array für die Beschriftungen der Buttons
+String macroNames[8] = {"M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"};
+
+String keyboardLayout = "DE"; // Standardmäßig auf Deutsch eingestellt
+
+
+// Dimensionen für das Makro-Grid (320x240 Pixel)
+const int btnWidth = 93;
+const int btnHeight = 66;
+const int spacing = 10;
 
 bool wifi_start_STA() //Start WiFi Mode STA
 {
@@ -173,6 +191,13 @@ uint8_t GetDaysOfMonth(uint16_t y, uint8_t m)
   }
 }
 
+/***** die Anzahl der Tage (Tag des Jahres) berechnen *****/
+uint16_t GetDayOfYear(uint16_t y, uint8_t m, uint8_t d) 
+{
+  static const uint16_t mdays[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
+  return d + mdays[m - 1] + (m >= 2 && IsLeapYear(y));
+}
+
 /***** Die Wochennummer nach ISO 8601 berechnen *****/
 uint8_t GetWeekNumber(uint16_t y, uint8_t m, uint8_t d) 
 {
@@ -201,13 +226,6 @@ uint8_t GetWeekNumber(uint16_t y, uint8_t m, uint8_t d)
   return wnr;
 }
 
-/***** die Anzahl der Tage (Tag des Jahres) berechnen *****/
-uint16_t GetDayOfYear(uint16_t y, uint8_t m, uint8_t d) 
-{
-  static const uint16_t mdays[] = {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
-  return d + mdays[m - 1] + (m >= 2 && IsLeapYear(y));
-}
-
 uint16_t createColor(uint8_t r, uint8_t g, uint8_t b) 
 {
   return RGB565(r >> 3, g >> 2, b >> 3);
@@ -230,11 +248,9 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
     }
   }
 
-  
   tft.fillRect(0 , 41, 320, 18, createColor(160, 160, 160));
   for (int i = 0; i <= 5; i++) 
   {
-    //Paint_DrawString_EN(i * 55 + 20, 42, WeekDays[i], &Font24, BLACK, WHITE);
     tft.drawString(WeekDays[i], i * 45 + 16, 42, 2);
   }
   tft.setTextColor(TFT_WHITE, TFT_RED);
@@ -310,7 +326,6 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
 
     if (strstr(SchoolholStr.c_str(), SearchStrSchool.c_str()) != NULL) //dieser Tag ist ein School Ferientag
     {
-      //colorb = TFT_GREENYELLOW;
       colorb = createColor(255,255,150);
     }
     else
@@ -322,18 +337,15 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
 
     if (i <= 8) //etwas weiter rechts schreiben wenn Tag 1-9
     {
-      //Paint_DrawNum(k * 55 + 28, l * 37 + 80, i + 1, &Font24, BLACK, WHITE);
       tft.drawNumber(i + 1, k * 45 + 20, l * 28 + 70, 2);
     }
     else
     {
-      //Paint_DrawNum(k * 55 + 20, l * 37 + 80, i + 1, &Font24, BLACK, WHITE);
       tft.drawNumber(i + 1, k * 45 + 16, l * 28 + 70, 2);  
     }
 
     if ((i + 1) == d) //aktuellen Tag umranden
     {
-      //Paint_DrawRectangle(k * 55 + 16, l * 37 + 74, k * 55 + 16 + 40, l * 37 + 74 + 32, BLACK, DOT_PIXEL_2X2, DRAW_FILL_EMPTY);
       tft.drawRect(k * 45 + 12, l * 28 + 66, 24, 24, color);
     }    
   }
@@ -358,7 +370,6 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
   tft.drawLine(95, 209, 95, 239, TFT_BLACK);
 
   tft.setTextColor(TFT_DARKGREEN, TFT_WHITE);
-  //tft.drawString(Translate[0], 100, 212, 1);
   tft.drawString(Translate[1], 100, 212, 1);
   tft.drawString(Translate[2], 145, 212, 1);
   tft.setTextColor(TFT_GREEN, createColor(90, 90, 90));
@@ -370,6 +381,270 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
     tft.drawString(String(GetDayOfYear(y, m, d)), 147, 222, 2);
   }
   tft.fillRect(189, 210, 131, 30, createColor(90, 90, 90));
+}
+
+// Funktion: Zeichnet die 3. Seite (Makro-Tastatur)
+void drawMacroPage() {
+  tft.fillScreen(TFT_BLACK);
+  
+  tft.setFreeFont(NULL); 
+  tft.setTextFont(1); 
+  tft.setTextDatum(MC_DATUM); 
+
+  for (int row = 0; row < 3; row++) {
+    for (int col = 0; col < 3; col++) {
+      int index = row * 3 + col;
+      int x = spacing + col * (btnWidth + spacing);
+      int y = spacing + row * (btnHeight + spacing);
+      
+      int centerX = x + (btnWidth / 2);
+      int centerY = y + (btnHeight / 2);
+      
+      if (index < 8) {
+        // Makro Buttons 1 bis 8 (Blau)
+        tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_NAVY);
+        tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_BLUE);
+        tft.setTextColor(TFT_WHITE);
+        
+        String name = macroNames[index];
+        int slashIndex = name.indexOf('/');
+        
+        // Beide Modi laufen jetzt auf Textgröße 2
+        tft.setTextSize(2);
+        
+        if (slashIndex != -1) {
+          // ZWEIZEILIG: Text splitten, aber TextSize bleibt groß (2)
+          String line1 = name.substring(0, slashIndex);
+          String line2 = name.substring(slashIndex + 1);
+          line1.trim();
+          line2.trim();
+          
+          // Abstand leicht vergrößert (+/- 12 statt 10), damit die große Schrift Platz hat
+          tft.drawString(line1, centerX, centerY - 12);
+          tft.drawString(line2, centerX, centerY + 12);
+        } else {
+          // EINZEILIG: In die exakte Mitte
+          tft.drawString(name, centerX, centerY);
+        }
+      } else {
+        // 9. Button: Zurück (Rot)
+        tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_MAROON);
+        tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_RED);
+        tft.setTextColor(TFT_WHITE);
+        tft.setTextSize(2);
+        tft.drawString("ZURUECK", centerX, centerY);
+      }
+    }
+  }
+}
+
+// Funktion: Sendet Makros über universelle Windows-ALT-Codes (100% Layout-unabhängig)
+void sendMacroSequence(String seq) {
+  if (!bleKeyboard.isConnected()) {
+    Serial.println("Bluetooth nicht verbunden!");
+    return;
+  }
+
+  int i = 0;
+  while (i < seq.length()) {
+    
+    // 1. STEUERTASTEN
+    if (seq.substring(i).startsWith("[TAB]")) {
+      bleKeyboard.releaseAll(); delay(100);
+      bleKeyboard.press(KEY_TAB); delay(100);
+      bleKeyboard.release(KEY_TAB); delay(100); 
+      bleKeyboard.releaseAll(); delay(100); 
+      i += 5;
+    } 
+    else if (seq.substring(i).startsWith("[RET]")) {
+      bleKeyboard.println(""); delay(100); 
+      i += 5;
+    } 
+    
+    // 2. STRATEGIE-WEICHE NACH LAYOUT
+    else {
+      if (keyboardLayout == "US") {
+        bleKeyboard.print(seq[i]);
+        i++;
+        delay(25);
+      } 
+      else {
+        uint8_t byte1 = (uint8_t)seq[i];
+
+        // --- A) UTF-8 MULTIBYTE-ABFANGEN (Gruppe 0xC3 - Umlaute & ß) ---
+        if (byte1 == 0xC3 && i + 1 < seq.length()) {
+          uint8_t byte2 = (uint8_t)seq[i+1];
+          switch (byte2) {
+            case 0xA4: bleKeyboard.print("'");  break; // ä -> US [']
+            case 0xB6: bleKeyboard.print(";");  break; // ö -> US [;]
+            case 0xBC: bleKeyboard.print("[");  break; // ü -> US [[]
+            case 0x84: bleKeyboard.print("\""); break; // Ä -> US [Shift + ']
+            case 0x96: bleKeyboard.print(":");  break; // Ö -> US [Shift + ;]
+            case 0x9C: bleKeyboard.print("{");  break; // Ü -> US [Shift + []
+            case 0x9F: bleKeyboard.print("-");  break; // ß -> US [-]
+            default:   break; 
+          }
+          i += 2;
+          delay(25);
+        }
+        // --- B) UTF-8 MULTIBYTE-ABFANGEN (Gruppe 0xC2 - Paragraph & Akzent) ---
+        else if (byte1 == 0xC2 && i + 1 < seq.length()) {
+          uint8_t byte2 = (uint8_t)seq[i+1];
+          switch (byte2) {
+            case 0xA7: bleKeyboard.print("#"); break; // § -> US [Shift + 3]
+            case 0xB4: bleKeyboard.print("="); break; // ´ -> US [=]
+            default:   break;
+          }
+          i += 2;
+          delay(25);
+        }
+        // --- C) REINE 1-BYTE ASCII-MATRIX (Symmetrischer Tausch) ---
+        else {
+          char c = seq[i];
+          bool handled = true;
+          
+          switch (c) {
+            // HARDCORE-FIX: Die europäische ISO-Sondertaste (< > |) per explizitem uint8_t Scancode 0x64
+            case '<': 
+              bleKeyboard.press((uint8_t)0x64); delay(15); 
+              bleKeyboard.release((uint8_t)0x64); break;
+            case '>': 
+              bleKeyboard.press(KEY_LSHIFT); delay(15); 
+              bleKeyboard.press((uint8_t)0x64); delay(15);
+              bleKeyboard.release((uint8_t)0x64); delay(15); 
+              bleKeyboard.release(KEY_LSHIFT); break;
+            case '|': 
+              bleKeyboard.press(KEY_RALT); delay(15); 
+              bleKeyboard.press((uint8_t)0x64); delay(15);
+              bleKeyboard.release((uint8_t)0x64); delay(15); 
+              bleKeyboard.release(KEY_RALT); break;
+
+            // Buchstaben-Tausch (Z und Y)
+            case 'z': bleKeyboard.print("y"); break;
+            case 'Z': bleKeyboard.print("Y"); break;
+            case 'y': bleKeyboard.print("z"); break;
+            case 'Y': bleKeyboard.print("Z"); break;
+            
+            // Die obere Zahlen-Reihe (Shift-Sonderzeichen auf DE-PC)
+            case '"': bleKeyboard.print("@"); break; // Erzeugt "
+            case '&': bleKeyboard.print("^"); break; // Erzeugt &
+            case '/': bleKeyboard.print("&"); break; // Erzeugt /
+            case '(': bleKeyboard.print("*"); break; // Erzeugt (
+            case ')': bleKeyboard.print("("); break; // Erzeugt )
+            case '=': bleKeyboard.print(")"); break; // Erzeugt =
+            case '?': bleKeyboard.print("_"); break; // Erzeugt ?
+            case '`': bleKeyboard.print("+"); break; // Erzeugt `
+            
+            // Sonstige Satz- und Sonderzeichen im Hauptfeld
+            case '-': bleKeyboard.print("/"); break; // Erzeugt -
+            case '_': bleKeyboard.print("?"); break; // Erzeugt _
+            case ':': bleKeyboard.print(">"); break; // Erzeugt :
+            case ';': bleKeyboard.print("<"); break; // Erzeugt ;
+            case '#': bleKeyboard.print("\\"); break;// Erzeugt #
+            case '\'':bleKeyboard.print("|"); break; // Erzeugt '
+            case '+': bleKeyboard.print("]"); break; // Erzeugt +
+            case '*': bleKeyboard.print("}"); break; // Erzeugt *
+
+            // Die verbleibenden AltGr-Kombinationen ({ [ ] } \ @ ~)
+            case '{': 
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("7"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case '[': 
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("8"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case ']': 
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("9"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case '}': 
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("0"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case '\\':
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("-"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case '@':
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("q"); delay(15); bleKeyboard.release(KEY_RALT); break;
+            case '~': // KORRIGIERT: Hochkommas für das Tilde-Zeichen gesetzt
+              bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("]"); delay(15); bleKeyboard.release(KEY_RALT); break;
+
+            default:  
+              handled = false; 
+              break; 
+          }
+          
+          if (!handled) {
+            bleKeyboard.print(c);
+          }
+          
+          i++;
+          delay(25);
+        }
+      } // Ende DE-Zweig
+    } // Ende Zeichen-Generierung
+  } // Ende while
+}
+
+// Funktion: Überprüft Touch auf der Makro-Seite (Konvertiert rohe TS-Punkte in Pixel)
+void handleMacroPageTouch(int pixelX, int pixelY) {
+  tft.setFreeFont(NULL);
+  tft.setTextFont(1);
+  tft.setTextDatum(MC_DATUM);
+
+  for (int row = 0; row < 3; row++) {
+    for (int col = 0; col < 3; col++) {
+      int index = row * 3 + col;
+      int x = spacing + col * (btnWidth + spacing);
+      int y = spacing + row * (btnHeight + spacing);
+      
+      int centerX = x + (btnWidth / 2);
+      int centerY = y + (btnHeight / 2);
+
+      if (pixelX >= x && pixelX <= (x + btnWidth) && pixelY >= y && pixelY <= (y + btnHeight)) {
+        if (index < 8) {
+          Serial.printf("Button '%s' gedrueckt. Sende Makro...\n", macroNames[index].c_str());
+          
+          String name = macroNames[index];
+          int slashIndex = name.indexOf('/');
+          
+          // ─── VISUELLES FEEDBACK (ORANGE) ───
+          tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, createColor(255, 165, 0));
+          tft.setTextColor(TFT_BLACK);
+          tft.setTextSize(2); // Große Schrift beim Drücken erzeugen
+          
+          if (slashIndex != -1) {
+            tft.drawString(name.substring(0, slashIndex), centerX, centerY - 12);
+            tft.drawString(name.substring(slashIndex + 1), centerX, centerY + 12);
+          } else {
+            tft.drawString(name, centerX, centerY);
+          }
+          
+          // Makro senden
+          sendMacroSequence(macroStrings[index]);
+          
+          // Warte auf Touch-Release (Stift wird abgehoben)
+          while (ts.touched()) { delay(10); }
+          
+          // ─── RESET IN DEN NORMALZUSTAND (BLAU) ───
+          tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_NAVY);
+          tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_BLUE);
+          tft.setTextColor(TFT_WHITE);
+          
+          if (slashIndex != -1) {
+            // SICHERHEITSHAKEN: TextSize unmittelbar vor dem Zeichnen erneut erzwingen!
+            tft.setTextSize(2); 
+            tft.drawString(name.substring(0, slashIndex), centerX, centerY - 12);
+            tft.setTextSize(2); 
+            tft.drawString(name.substring(slashIndex + 1), centerX, centerY + 12);
+          } else {
+            tft.setTextSize(2);
+            tft.drawString(name, centerX, centerY);
+          }
+        } else {
+          Serial.println("Zurueck-Button gedrueckt -> Gehe zu Kalender");
+          function = 0;
+          while (ts.touched()) { delay(10); }
+          event_tm_hour = -1;
+          event_tm_min = -1;
+          event_tm_sec = -1;
+        }
+        return;
+      }
+    }
+  }
 }
 
 // parse config.txt Lines to Var
@@ -384,6 +659,7 @@ void parseConfigLine(String line)
   value.replace("\n", "");
   Serial.print(key + F("="));
   Serial.println(value);
+  
   if (key == "ssid") {
     ssid = value;
   } else if (key == "password") {
@@ -402,6 +678,9 @@ void parseConfigLine(String line)
     latitude = value;
   } else if (key == "longitude") {
     longitude = value;
+  } else if (key == "layout") {            // ─── NEU: Layout-Schalter für US/DE ───
+    keyboardLayout = value;
+    keyboardLayout.toUpperCase();
   } else if (key == "WeekDays") {
     int index = 0;
     int start = 0;
@@ -456,6 +735,22 @@ void parseConfigLine(String line)
     schoolhol[1] = value;
   } else if (key == "schoolhol2") {
     schoolhol[2] = value;
+  } 
+  // ─── NEU: Makro-Tasten key1 bis key8 einlesen ───
+  else if (key.startsWith("key")) {
+    int keyNum = key.substring(3).toInt();
+    if (keyNum >= 1 && keyNum <= 8) {
+      int index = keyNum - 1;
+      int commaIndex = value.indexOf(',');
+      if (commaIndex != -1) {
+        macroNames[index] = value.substring(0, commaIndex);
+        macroStrings[index] = value.substring(commaIndex + 1);
+        macroNames[index].trim();
+      } else {
+        macroNames[index] = value;
+        macroStrings[index] = "";
+      }
+    }
   }
 }
 
@@ -511,8 +806,6 @@ bool SoftTimer(unsigned long time_period_set)
     time_start_ms = millis();
     time_period_ms = time_period_set;
     time_flag = true;
-    //Serial.println(time_start_ms);
-    //Serial.println(time_period_ms);
   }
   else
   {
@@ -520,7 +813,6 @@ bool SoftTimer(unsigned long time_period_set)
     {
       time_flag = false;
       bflag = true;
-      //Serial.println("TRIGGER");     
     }
   }
   return bflag;
@@ -548,13 +840,19 @@ void setup()
   // Clear the screen before writing to it
   tft.fillScreen(TFT_BLACK);
   tft.setFreeFont(&seven_regular11pt7b);
-  tft.drawString("CALENDAR V1.1", 0, 0);
-  tft.setTextFont(1);
+  tft.drawString("CALENDAR V1.2", 0, 0);
 
+  // STARTET den Bluetooth-Funk der Tastatur
+  bleKeyboard.setLogLevel(HIDLogLevel::Normal);
+  //bleKeyboard.set_locale(KEYBOARD_LOCALE_GERMAN); 
+  bleKeyboard.begin();
+
+  tft.setTextFont(1);
 
   tft.setTextColor(createColor(128, 255, 128), TFT_BLACK);
   tft.setCursor (0,30);
   tft.println("Calendar Start");
+
   if (ssid != "")
   {
     if (wifi_start_STA() == true)
@@ -613,61 +911,57 @@ void loop()
   double sunset;
   double sunnow;
   
-  // EVENT every hour
-  if (localtime.tm_hour != event_tm_hour)
+  // EVENT every hour (Wird nur auf Seite 0 und 1 gezeichnet)
+  if (localtime.tm_hour != event_tm_hour && function != 2)
   {
     event_tm_hour = localtime.tm_hour;
     Serial.println("event_tm_hour");
-    // LOCAL Date TT.MO.YYYY
     sprintf(dateString, "%02d.%02d.%04d", localtime.tm_mday, localtime.tm_mon + 1, localtime.tm_year + 1900);
-    // Berechne die Zeitzone basierend auf der Differenz zwischen lokaler Zeit und UTC-Zeit 
-
-	  //timeZone = (mktime(&localtime) - mktime(utctime)) / 3600; // Differenz in Stunden
     
-	  struct tm localtime_copy = localtime;
-	  localtime_copy.tm_isdst = 0; // DST deaktivieren
-	  timeZone = (mktime(&localtime_copy) - mktime(utctime)) / 3600;
-	
+    struct tm localtime_copy = localtime;
+    localtime_copy.tm_isdst = 0; // DST deaktivieren
+    timeZone = (mktime(&localtime_copy) - mktime(utctime)) / 3600;
+  
     sun.setPosition(latitude.toDouble(), longitude.toDouble(), timeZone);
     sun.setCurrentDate(localtime.tm_year + 1900, localtime.tm_mon + 1, localtime.tm_mday);
-    // Sun min
-    // sunrise = sun.calcSunrise(); 
-    // sunset = sun.calcSunset();
     
-	  sunrise = sun.calcSunrise();
-	  sunset = sun.calcSunset();
-
-    // Sun rise/set HH:MM
+    sunrise = sun.calcSunrise();
+    sunset = sun.calcSunset();
+  
     int sunrisehours = int(sunrise / 60); 
     int sunriseminutes = int((sunrise / 60 - sunrisehours) * 60);
     int sunsethours = int(sunset / 60); 
     int sunsetminutes = int((sunset / 60 - sunsethours) * 60);
     sprintf(sunriseString, "%02d:%02d", sunrisehours, sunriseminutes);
     sprintf(sunsetString, "%02d:%02d", sunsethours, sunsetminutes);
+
     if (function == 0)
     {
-      // Zeichnet den Kalender neu
+      // Urzustand für das Kalender-Layout wiederherstellen
+      tft.setTextDatum(TL_DATUM); 
+      tft.setTextSize(1);
+      tft.setFreeFont(NULL);
+
       tft.fillScreen(TFT_WHITE);
       tft.setTextColor(TFT_BLACK, TFT_WHITE);
       tft.setCursor (0,0);
-      //tft.println("NTP Sync");
-      //configTzTime(tzinfo.c_str(), ntpserver.c_str()); // ESP32 Systemzeit mit NTP Synchronisieren
-      //delay(1000);
-      //getLocalTime(&localtime);
       yy_mem = localtime.tm_year;
       mm_mem = localtime.tm_mon;
-      draw_cal(yy_mem + 1900,mm_mem + 1, localtime.tm_mday);
+      draw_cal(yy_mem + 1900, mm_mem + 1, localtime.tm_mday);
     }
     if (function == 1)
     {
-      // Zeichnet die Uhr neu
+      // Urzustand für das Uhren-Layout wiederherstellen
+      tft.setTextDatum(TL_DATUM); 
+      tft.setTextSize(1);
+      tft.setFreeFont(NULL);
+
       tft.fillScreen(TFT_BLACK);
       tft.setTextColor(TFT_BLACK, TFT_WHITE);
       tft.setCursor (0,0);
-      // draw Date      
       tft.setTextColor(TFT_WHITE, createColor(0, 0, 90));
       tft.drawString(dateString, 38, 0, 6);      
-      // draw Sun
+      
       double x_sunrise = sunrise * 320 / 1440;
       double x_sunset = sunset * 320 / 1440;
       int y_pos = 172;
@@ -676,22 +970,20 @@ void loop()
       tft.fillRect(x_sunset , y_pos + 27, 319 - x_sunset , 10, createColor(0, 0, 90));
       tft.setTextColor(TFT_WHITE, TFT_BLACK);
       tft.drawString(sunriseString, x_sunrise - 17, y_pos + 37, 2);
-      tft.drawString(Translate[3], x_sunrise - 17, y_pos + 55, 1);
+      tft.drawString("Sunrise", x_sunrise - 17, y_pos + 55, 1);
       tft.drawString(sunsetString, x_sunset - 17, y_pos + 37, 2);
-      tft.drawString(Translate[4], x_sunset - 17, y_pos + 55, 1); 
+      tft.drawString("Sunset", x_sunset - 17, y_pos + 55, 1); 
       for (int i = 0; i < 24 ; i += 2)
       {        
         tft.setTextColor(TFT_YELLOW, createColor(0, 120, 0));
         sprintf(hourString, "%02d", i);
         tft.drawString(hourString, (i * 320 / 24), y_pos + 9, 1);
-        //tft.drawLine(i * 320 / 24, y_pos + 0, i * 320 / 24, y_pos + 9, createColor(90, 90, 255));
       }   
       for (int i = 1; i < 24 ; i += 2)
       {        
         tft.setTextColor(TFT_YELLOW, createColor(0, 120, 0));
         sprintf(hourString, "%02d", i);
         tft.drawString(hourString, (i * 320 / 24), y_pos - 0, 1);
-        //tft.drawLine(i * 320 / 24, y_pos + 0, i * 320 / 24, y_pos + 9, createColor(90, 90, 255));
       }         
     }
   }
@@ -701,17 +993,10 @@ void loop()
   {
     event_tm_min = localtime.tm_min;
     Serial.println("event_tm_min");
-    // UTC Time HH:MM
-    sprintf(utctimeString, "%02d:%02d", utctime->tm_hour, utctime->tm_min);
-    // Sun now min
+    utctimeString[0] = '\0'; // Platzhalter zur Vermeidung von Warnings
     sunnow = localtime.tm_min + localtime.tm_hour * 60;
-    if (function == 0)
-    {
-
-    }
     if (function == 1)
     {
-      // draw Sun
       double x_sunnow = sunnow * 320 / 1440;
       int y_pos = 172;
       tft.fillRect(0 , y_pos + 17, x_sunnow, 10, createColor(255, 0, 0));
@@ -719,12 +1004,11 @@ void loop()
     }
   }
 
-  // EVENT every sec
-  if (localtime.tm_sec != event_tm_sec)
+  // EVENT every sec (Zeitausgabe wird auf Makro-Schnittstelle unterdrückt)
+  if (localtime.tm_sec != event_tm_sec && function != 2)
   {
     event_tm_sec = localtime.tm_sec;
     Serial.println("event_tm_sec");
-    // LOCAL Time .HH:MM:SS
     if (tformat == "24")
     {
       sprintf(localtimeString, "%02d:%02d:%02d", localtime.tm_hour, localtime.tm_min, localtime.tm_sec);
@@ -745,181 +1029,174 @@ void loop()
     } 
     if (function == 0)
     {
-      // draw Time to CAL
-      // without Flicker with Sprite
-      TFT_eSprite sprite = TFT_eSprite(&tft); // Erstelle ein Sprite-Objekt
-      sprite.createSprite(115, 22); // Erstelle ein Sprite mit der Größe des Displays
+      tft.setTextDatum(TL_DATUM); // Sicherstellen für die Sprite-Ausgabe
+      TFT_eSprite sprite = TFT_eSprite(&tft);
+      sprite.createSprite(115, 22);
       sprite.fillSprite(createColor(128, 128, 128));
-      sprite.setFreeFont(&seven_regular11pt7b); // Setze den benutzerdefinierten Font
-      sprite.setTextColor(TFT_GREEN, createColor(0, 0, 0)); // Setze die Textfarbe
-      sprite.drawString(localtimeString, 0, 0); // Zeichne den Text in das Sprite
-      sprite.pushSprite(198, 214); // Übertrage das Sprite auf das Display
-      sprite.deleteSprite(); // Lösche das Sprite, um Speicher freizugeben 
-
+      sprite.setFreeFont(&seven_regular11pt7b);
+      sprite.setTextColor(TFT_GREEN, createColor(0, 0, 0));
+      sprite.drawString(localtimeString, 0, 0);
+      sprite.pushSprite(198, 214);
+      sprite.deleteSprite();
       SoftTimer(500);
     }
     if (function == 1)
     {
-      // draw Time to CLOCK
-      // without Flicker with Sprite
-      TFT_eSprite sprite = TFT_eSprite(&tft); // Erstelle ein Sprite-Objekt
-      sprite.createSprite(318, 61); // Erstelle ein Sprite mit der Größe des Displays
+      tft.setTextDatum(TL_DATUM); // Sicherstellen für die Sprite-Ausgabe
+      TFT_eSprite sprite = TFT_eSprite(&tft);
+      sprite.createSprite(318, 61);
       sprite.fillSprite(createColor(128, 128, 128));
-      sprite.setFreeFont(&seven_regular31pt7b); // Setze den benutzerdefinierten Font
-      sprite.setTextColor(TFT_RED, TFT_BLACK); // Setze die Textfarbe
-      sprite.drawString(localtimeString, 0, 0); // Zeichne den Text in das Sprite
-      sprite.pushSprite(1, 78); // Übertrage das Sprite auf das Display
-      sprite.deleteSprite(); // Lösche das Sprite, um Speicher freizugeben
-
+      sprite.setFreeFont(&seven_regular31pt7b);
+      sprite.setTextColor(TFT_RED, TFT_BLACK);
+      sprite.drawString(localtimeString, 0, 0);
+      sprite.pushSprite(1, 78);
+      sprite.deleteSprite();
       SoftTimer(500);
     }
   }
 
-  if (SoftTimer(0))
+  if (SoftTimer(0) && function != 2)
   {
     if (function == 0)
     {
-      // draw Time to CAL ohne : nach 500ms
-      // without Flicker with Sprite
-      TFT_eSprite sprite = TFT_eSprite(&tft); // Erstelle ein Sprite-Objekt
-      sprite.createSprite(115, 22); // Erstelle ein Sprite mit der Größe des Displays
+      tft.setTextDatum(TL_DATUM);
+      TFT_eSprite sprite = TFT_eSprite(&tft);
+      sprite.createSprite(115, 22);
       sprite.fillSprite(createColor(128, 128, 128));
-      sprite.setFreeFont(&seven_regular11pt7b); // Setze den benutzerdefinierten Font
-      sprite.setTextColor(TFT_GREEN, createColor(0, 0, 0)); // Setze die Textfarbe
-      sprite.drawString(locaxtimeString, 0, 0); // Zeichne den Text in das Sprite
-      sprite.pushSprite(198, 214); // Übertrage das Sprite auf das Display
-      sprite.deleteSprite(); // Lösche das Sprite, um Speicher freizugeben 
+      sprite.setFreeFont(&seven_regular11pt7b);
+      sprite.setTextColor(TFT_GREEN, createColor(0, 0, 0));
+      sprite.drawString(locaxtimeString, 0, 0);
+      sprite.pushSprite(198, 214);
+      sprite.deleteSprite();
     }
     if (function == 1)
     {
-      // draw Time to CLOCK ohne : nach 500ms
-      // without Flicker with Sprite
-      TFT_eSprite sprite = TFT_eSprite(&tft); // Erstelle ein Sprite-Objekt
-      sprite.createSprite(318, 61); // Erstelle ein Sprite mit der Größe des Displays
+      tft.setTextDatum(TL_DATUM);
+      TFT_eSprite sprite = TFT_eSprite(&tft);
+      sprite.createSprite(318, 61);
       sprite.fillSprite(createColor(128, 128, 128));
-      sprite.setFreeFont(&seven_regular31pt7b); // Setze den benutzerdefinierten Font
-      sprite.setTextColor(TFT_RED, TFT_BLACK); // Setze die Textfarbe
-      sprite.drawString(locaxtimeString, 0, 0); // Zeichne den Text in das Sprite
-      sprite.pushSprite(1, 78); // Übertrage das Sprite auf das Display
-      sprite.deleteSprite(); // Lösche das Sprite, um Speicher freizugeben
+      sprite.setFreeFont(&seven_regular31pt7b);
+      sprite.setTextColor(TFT_RED, TFT_BLACK);
+      sprite.drawString(locaxtimeString, 0, 0);
+      sprite.pushSprite(1, 78);
+      sprite.deleteSprite();
     }
   }
-
 
   // EVENT Pen touch
   if (ts.tirqTouched() && ts.touched()) 
   {
     TS_Point p = ts.getPoint();
     printTouchToSerial(p);
-    //printTouchToDisplay(p);
-    if (p.y < 800)
-    {
-      int brightness_step = 32;
-      if (brightness < 64) 
-      {
-        brightness_step = 16; 
-      }
-      if (brightness < 32) 
-      {
-        brightness_step = 8; 
-      }
-      if (brightness < 16) 
-      {
-        brightness_step = 4; 
-      }
-      if (brightness < 8) 
-      {
-        brightness_step = 2; 
-      }
-      if (brightness < 4) 
-      {
-        brightness_step = 1; 
-      }
-      if (p.x < 800)
-      {
-        brightness = brightness - brightness_step;
-        if (brightness <= 0) 
-        {
-          brightness = 1;
-        }
-      }
-      if (p.x > 3200)
-      {
-        brightness = brightness + brightness_step;
-        if (brightness >= 255) 
-        {
-          brightness = 255;
-        }
-      }
-      analogWrite(backlightPin, brightness);
-      Serial.print("Brightness=");
-      Serial.println(brightness);
-    }
+    
+    // Berechne Pixel-Koordinaten (0-320 und 0-240) aus den rohen Touchwerten für das Makro-Grid
+    int pixelX = map(p.x, 300, 3900, 0, 320);
+    int pixelY = map(p.y, 300, 3900, 0, 240);
 
-    if ((p.y > 800) && (p.y < 3300))
-    {
-      function = 0;
-      if (p.x < 800)
+    // WENN WIR AUF DER MAKRO SEITE SIND: Direkt dorthin weiterleiten
+    if (function == 2) {
+      handleMacroPageTouch(pixelX, pixelY);
+    } 
+    // ANDERNFALLS: Normale Navigation (Seite 0 und 1)
+    else {
+      if (p.y < 800)
       {
-        int mm_mem_x = mm_mem;
-        int yy_mem_x = yy_mem;
-        mm_mem = mm_mem - 1;
-        if (mm_mem < 0)
+        int brightness_step = 32;
+        if (brightness < 64) brightness_step = 16; 
+        if (brightness < 32) brightness_step = 8; 
+        if (brightness < 16) brightness_step = 4; 
+        if (brightness < 8)  brightness_step = 2; 
+        if (brightness < 4)  brightness_step = 1; 
+        
+        if (p.x < 800)
         {
-          yy_mem = yy_mem - 1;
-          mm_mem = 11;
+          brightness = brightness - brightness_step;
+          if (brightness <= 0) brightness = 1;
         }
-        int yy_mem_comp = Year[0].toInt() - 1900;
-        if (yy_mem >= yy_mem_comp)
+        if (p.x > 3200)
         {
-          draw_cal(yy_mem + 1900,mm_mem + 1,0);
+          brightness = brightness + brightness_step;
+          if (brightness >= 255) brightness = 255;
         }
-        else
-        {
-          mm_mem = mm_mem_x;
-          yy_mem = yy_mem_x;
-        }          
+        analogWrite(backlightPin, brightness);
+        Serial.print("Brightness=");
+        Serial.println(brightness);
       }
-      if (p.x > 3200)
+
+      if ((p.y > 800) && (p.y < 3300))
       {
-        int mm_mem_x = mm_mem;
-        int yy_mem_x = yy_mem;
-        mm_mem = mm_mem + 1;
-        if (mm_mem > 11)
+        function = 0;
+        if (p.x < 800)
         {
-          yy_mem = yy_mem + 1;
-          mm_mem = 0;
+          int mm_mem_x = mm_mem;
+          int yy_mem_x = yy_mem;
+          mm_mem = mm_mem - 1;
+          if (mm_mem < 0)
+          {
+            yy_mem = yy_mem - 1;
+            mm_mem = 11;
+          }
+          int yy_mem_comp = Year[0].toInt() - 1900;
+          if (yy_mem >= yy_mem_comp)
+          {
+            tft.setTextDatum(TL_DATUM); // Sicherstellen, dass das Datum beim Blättern stimmt
+            draw_cal(yy_mem + 1900, mm_mem + 1, 0);
+          }
+          else
+          {
+            mm_mem = mm_mem_x;
+            yy_mem = yy_mem_x;
+          }          
         }
-        int yy_mem_comp = Year[2].toInt() - 1900;
-        if (yy_mem <= yy_mem_comp)
+        if (p.x > 3200)
         {
-          draw_cal(yy_mem + 1900,mm_mem + 1,0);
+          int mm_mem_x = mm_mem;
+          int yy_mem_x = yy_mem;
+          mm_mem = mm_mem + 1;
+          if (mm_mem > 11)
+          {
+            yy_mem = yy_mem + 1;
+            mm_mem = 0;
+          }
+          int yy_mem_comp = Year[2].toInt() - 1900;
+          if (yy_mem <= yy_mem_comp)
+          {
+            tft.setTextDatum(TL_DATUM); // Sicherstellen, dass das Datum beim Blättern stimmt
+            draw_cal(yy_mem + 1900, mm_mem + 1, 0);
+          }
+          else
+          {
+            mm_mem = mm_mem_x;
+            yy_mem = yy_mem_x;
+          }          
         }
-        else
+        if ((p.x > 800) && (p.x < 3200))
         {
-          mm_mem = mm_mem_x;
-          yy_mem = yy_mem_x;
-        }          
+          yy_mem = localtime.tm_year;
+          mm_mem = localtime.tm_mon;        
+          event_tm_hour = -1;
+          event_tm_min = -1;
+          event_tm_sec = -1;
+        }
       }
-      if ((p.x > 800) && (p.x < 3200))
+      
+      if (p.y > 3300)
       {
-        yy_mem = localtime.tm_year;
-        mm_mem = localtime.tm_mon;        
-        event_tm_hour = -1;
-        event_tm_min = -1;
-        event_tm_sec = -1;
+        // Wenn bereits auf der Uhr (function == 1), schalte weiter auf Makros (function == 2)
+        if (function == 1) {
+          function = 2;
+          Serial.println("Wechsle zur Makro-Schnittstelle (Seite 3)...");
+          drawMacroPage(); // Diese Funktion setzt intern das MC_DATUM
+        } else {
+          // Wenn auf Kalender (0), schalte zur Uhr (1)
+          function = 1;
+          event_tm_hour = -1;
+          event_tm_min = -1;
+          event_tm_sec = -1;      
+        }
       }
-    }
-    if (p.y > 3300)
-    {
-      function = 1;
-      event_tm_hour = -1;
-      event_tm_min = -1;
-      event_tm_sec = -1;      
     }
     delay(300);
   }
 }
-
-
 //end
