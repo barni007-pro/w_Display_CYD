@@ -121,6 +121,14 @@ List of school holidays for Year0. (Date,...)
 List of school holidays for Year1. (Date,...)
 ### schoolhol2=
 List of school holidays for Year2. (Date,...)
+### layout=
+CYD Macro Pad Keyboard Layout US/DE
+### key1= ... key8=
+Macro Pad label and macro <br>
+Label (single-line "Text") (two-line "Text1/Text2") <br>
+Separator between label and macro "," <br>
+Macro (characters or [TAB] [RET]) <br>
+Example: key1=Win/Passw,user[TAB]password[RET]
 
 ## Touch Operation:
 ![Operation](Touch_Kal.jpg)  <br>
@@ -129,7 +137,7 @@ Switches to the calendar view for the current month.
 ### BLUE
 Switches to the next calendar month step by step up or down.
 ### YELLOW
-Switches to the clock view.
+Switches to the clock view. In the clock view, it switches to the macro pad.
 ### RED
 Adjusts the display backlight brightness.
 
