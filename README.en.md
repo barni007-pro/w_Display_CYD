@@ -42,7 +42,8 @@ SOFTWARE.
  - Freely configurable for other time zones and locations (SD card).
 
 ![finished device](IMG_20250106_183430.jpg_compressed.JPEG) <br>
-![finished device](IMG_20250106_183649.jpg_compressed.JPEG)
+![finished device](IMG_20250106_183649.jpg_compressed.JPEG) <br>
+![fertiges Gerät](IMG_20260615_181132.jpg_compressed.JPEG)
 
 ## Hardware Tutorial:
 - https://randomnerdtutorials.com/cheap-yellow-display-esp32-2432s028r/
