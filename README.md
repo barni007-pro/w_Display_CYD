@@ -42,7 +42,8 @@ SOFTWARE.
  - Frei konfigurierbar auch für andere Zeitzonen und Standorte (SD-Karte).
 
 ![fertiges Gerät](IMG_20250106_183430.jpg_compressed.JPEG) <br>
-![fertiges Gerät](IMG_20250106_183649.jpg_compressed.JPEG)
+![fertiges Gerät](IMG_20250106_183649.jpg_compressed.JPEG) <br>
+![fertiges Gerät](IMG_20260615_181132.jpg_compressed.JPEG)
 
 ## Hardware Tutorial:
 - https://randomnerdtutorials.com/cheap-yellow-display-esp32-2432s028r/
@@ -51,8 +52,7 @@ SOFTWARE.
 - https://github.com/witnessmenow/ESP32-Cheap-Yellow-Display
 
 ![fertiges Gerät](IMG_20250106_201539.jpg_compressed.JPEG) <br> 
-![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG) <br>
-![fertiges Gerät](IMG_20260615_181132.jpg_compressed.JPEG)
+![fertiges Gerät](IMG_20250106_201550.jpg_compressed.JPEG)
 
 ## Arduino Library:
 - SPI.h <br>
