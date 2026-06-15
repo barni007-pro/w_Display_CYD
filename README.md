@@ -40,6 +40,7 @@ SOFTWARE.
  - Konfiguration über config.txt File auf eine Mikro SD Karte.
  - Anzeige einer Uhr mit Sonnen-Aufgang und -Untergang.
  - Frei konfigurierbar auch für andere Zeitzonen und Standorte (SD-Karte).
+ - Bluetooth Macro-Pad um Keyboard Macros zu senden.
 
 ![fertiges Gerät](IMG_20250106_183430.jpg_compressed.JPEG) <br>
 ![fertiges Gerät](IMG_20250106_183649.jpg_compressed.JPEG) <br>
