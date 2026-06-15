@@ -445,21 +445,67 @@ void sendMacroSequence(String seq) {
     return;
   }
 
+  Serial.printf("[MacroPad] Starte Sequenz: %s\n", seq.c_str());
+
   int i = 0;
   while (i < seq.length()) {
     
-    // 1. STEUERTASTEN
+    // 1. STEUERTASTEN & ERWEITERTE FUNKTIONSTASTEN
     if (seq.substring(i).startsWith("[TAB]")) {
-      bleKeyboard.releaseAll(); delay(100);
-      bleKeyboard.press(KEY_TAB); delay(100);
-      bleKeyboard.release(KEY_TAB); delay(100); 
-      bleKeyboard.releaseAll(); delay(100); 
+      bleKeyboard.releaseAll(); delay(50);
+      bleKeyboard.press(KEY_TAB); delay(50);
+      bleKeyboard.release(KEY_TAB); delay(50); 
+      bleKeyboard.releaseAll(); delay(50); 
       i += 5;
     } 
     else if (seq.substring(i).startsWith("[RET]")) {
-      bleKeyboard.println(""); delay(100); 
+      bleKeyboard.releaseAll(); delay(50);
+      bleKeyboard.press(KEY_RETURN); delay(50);
+      bleKeyboard.release(KEY_RETURN); delay(50); 
+      bleKeyboard.releaseAll(); delay(50); 
       i += 5;
     } 
+    // ─── AKTUALISIERT: MODIFIKATOR-WEICHE FÜR [F...], [S...], [C...], [A...] ───
+    else if (seq.charAt(i) == '[' && seq.length() >= i + 5 && seq.charAt(i + 4) == ']') {
+      char prefix = seq.charAt(i + 1); // Holt 'F', 'S', 'C' (KORRIGIERT) oder 'A'
+      
+      if (prefix == 'F' || prefix == 'S' || prefix == 'C' || prefix == 'A') {
+        int fNum = seq.substring(i + 2, i + 4).toInt(); // Holt die Zahl (01-24)
+        
+        if (fNum >= 1 && fNum <= 24) {
+          bleKeyboard.releaseAll(); delay(20);
+          
+          // 1. Modifikator-Taste basierend auf dem Präfix drücken
+          if (prefix == 'S') {
+            bleKeyboard.press(KEY_LSHIFT);
+            Serial.printf(" -> Modifikator: Shift +\n");
+          } else if (prefix == 'C') { // KORRIGIERT: Jetzt 'C' für Control
+            bleKeyboard.press(KEY_LCTRL); 
+            Serial.printf(" -> Modifikator: Control +\n");
+          } else if (prefix == 'A') {
+            bleKeyboard.press(KEY_LALT);  
+            Serial.printf(" -> Modifikator: Alt +\n");
+          }
+          delay(20);
+
+          // 2. Passenden nativen F-Keycode bestimmen
+          uint8_t fKeycode = (fNum <= 12) ? (KEY_F1 + (fNum - 1)) : (0x68 + (fNum - 13));
+          Serial.printf(" -> Sende Funktionstaste F%d\n", fNum);
+          
+          // 3. F-Taste dazudrücken und alles sauber lösen
+          bleKeyboard.press(fKeycode);
+          delay(100);
+          bleKeyboard.releaseAll(); 
+          delay(50);
+        }
+        i += 5; 
+      } else {
+        char c = seq[i];
+        bleKeyboard.print(c);
+        i++;
+        delay(25);
+      }
+    }
     
     // 2. STRATEGIE-WEICHE NACH LAYOUT
     else {
@@ -468,20 +514,20 @@ void sendMacroSequence(String seq) {
         i++;
         delay(25);
       } 
-      else {
+      else { // Deutsches Layout
         uint8_t byte1 = (uint8_t)seq[i];
 
         // --- A) UTF-8 MULTIBYTE-ABFANGEN (Gruppe 0xC3 - Umlaute & ß) ---
         if (byte1 == 0xC3 && i + 1 < seq.length()) {
           uint8_t byte2 = (uint8_t)seq[i+1];
           switch (byte2) {
-            case 0xA4: bleKeyboard.print("'");  break; // ä -> US [']
-            case 0xB6: bleKeyboard.print(";");  break; // ö -> US [;]
-            case 0xBC: bleKeyboard.print("[");  break; // ü -> US [[]
-            case 0x84: bleKeyboard.print("\""); break; // Ä -> US [Shift + ']
-            case 0x96: bleKeyboard.print(":");  break; // Ö -> US [Shift + ;]
-            case 0x9C: bleKeyboard.print("{");  break; // Ü -> US [Shift + []
-            case 0x9F: bleKeyboard.print("-");  break; // ß -> US [-]
+            case 0xA4: bleKeyboard.print("'");  break; // ä
+            case 0xB6: bleKeyboard.print(";");  break; // ö
+            case 0xBC: bleKeyboard.print("[");  break; // ü
+            case 0x84: bleKeyboard.print("\""); break; // Ä
+            case 0x96: bleKeyboard.print(":");  break; // Ö
+            case 0x9C: bleKeyboard.print("{");  break; // Ü
+            case 0x9F: bleKeyboard.print("-");  break; // ß
             default:   break; 
           }
           i += 2;
@@ -491,8 +537,8 @@ void sendMacroSequence(String seq) {
         else if (byte1 == 0xC2 && i + 1 < seq.length()) {
           uint8_t byte2 = (uint8_t)seq[i+1];
           switch (byte2) {
-            case 0xA7: bleKeyboard.print("#"); break; // § -> US [Shift + 3]
-            case 0xB4: bleKeyboard.print("="); break; // ´ -> US [=]
+            case 0xA7: bleKeyboard.print("#"); break; // §
+            case 0xB4: bleKeyboard.print("="); break; // ´
             default:   break;
           }
           i += 2;
@@ -504,21 +550,6 @@ void sendMacroSequence(String seq) {
           bool handled = true;
           
           switch (c) {
-            // HARDCORE-FIX: Die europäische ISO-Sondertaste (< > |) per explizitem uint8_t Scancode 0x64
-            case '<': 
-              bleKeyboard.press((uint8_t)0x64); delay(15); 
-              bleKeyboard.release((uint8_t)0x64); break;
-            case '>': 
-              bleKeyboard.press(KEY_LSHIFT); delay(15); 
-              bleKeyboard.press((uint8_t)0x64); delay(15);
-              bleKeyboard.release((uint8_t)0x64); delay(15); 
-              bleKeyboard.release(KEY_LSHIFT); break;
-            case '|': 
-              bleKeyboard.press(KEY_RALT); delay(15); 
-              bleKeyboard.press((uint8_t)0x64); delay(15);
-              bleKeyboard.release((uint8_t)0x64); delay(15); 
-              bleKeyboard.release(KEY_RALT); break;
-
             // Buchstaben-Tausch (Z und Y)
             case 'z': bleKeyboard.print("y"); break;
             case 'Z': bleKeyboard.print("Y"); break;
@@ -526,24 +557,24 @@ void sendMacroSequence(String seq) {
             case 'Y': bleKeyboard.print("Z"); break;
             
             // Die obere Zahlen-Reihe (Shift-Sonderzeichen auf DE-PC)
-            case '"': bleKeyboard.print("@"); break; // Erzeugt "
-            case '&': bleKeyboard.print("^"); break; // Erzeugt &
-            case '/': bleKeyboard.print("&"); break; // Erzeugt /
-            case '(': bleKeyboard.print("*"); break; // Erzeugt (
-            case ')': bleKeyboard.print("("); break; // Erzeugt )
-            case '=': bleKeyboard.print(")"); break; // Erzeugt =
-            case '?': bleKeyboard.print("_"); break; // Erzeugt ?
-            case '`': bleKeyboard.print("+"); break; // Erzeugt `
+            case '"': bleKeyboard.print("@"); break; 
+            case '&': bleKeyboard.print("^"); break; 
+            case '/': bleKeyboard.print("&"); break; 
+            case '(': bleKeyboard.print("*"); break; 
+            case ')': bleKeyboard.print("("); break; 
+            case '=': bleKeyboard.print(")"); break; 
+            case '?': bleKeyboard.print("_"); break; 
+            case '`': bleKeyboard.print("+"); break; 
             
             // Sonstige Satz- und Sonderzeichen im Hauptfeld
-            case '-': bleKeyboard.print("/"); break; // Erzeugt -
-            case '_': bleKeyboard.print("?"); break; // Erzeugt _
-            case ':': bleKeyboard.print(">"); break; // Erzeugt :
-            case ';': bleKeyboard.print("<"); break; // Erzeugt ;
-            case '#': bleKeyboard.print("\\"); break;// Erzeugt #
-            case '\'':bleKeyboard.print("|"); break; // Erzeugt '
-            case '+': bleKeyboard.print("]"); break; // Erzeugt +
-            case '*': bleKeyboard.print("}"); break; // Erzeugt *
+            case '-': bleKeyboard.print("/"); break; 
+            case '_': bleKeyboard.print("?"); break; 
+            case ':': bleKeyboard.print(">"); break; 
+            case ';': bleKeyboard.print("<"); break; 
+            case '#': bleKeyboard.print("\\"); break;
+            case '\'':bleKeyboard.print("|"); break; 
+            case '+': bleKeyboard.print("]"); break; 
+            case '*': bleKeyboard.print("}"); break; 
 
             // Die verbleibenden AltGr-Kombinationen ({ [ ] } \ @ ~)
             case '{': 
@@ -558,7 +589,7 @@ void sendMacroSequence(String seq) {
               bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("-"); delay(15); bleKeyboard.release(KEY_RALT); break;
             case '@':
               bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("q"); delay(15); bleKeyboard.release(KEY_RALT); break;
-            case '~': // KORRIGIERT: Hochkommas für das Tilde-Zeichen gesetzt
+            case '~': 
               bleKeyboard.press(KEY_RALT); delay(15); bleKeyboard.print("]"); delay(15); bleKeyboard.release(KEY_RALT); break;
 
             default:  
@@ -573,9 +604,10 @@ void sendMacroSequence(String seq) {
           i++;
           delay(25);
         }
-      } // Ende DE-Zweig
-    } // Ende Zeichen-Generierung
-  } // Ende while
+      } 
+    } 
+  } 
+  Serial.println("[MacroPad] Sequenz erfolgreich beendet.");
 }
 
 // Funktion: Überprüft Touch auf der Makro-Seite (Konvertiert rohe TS-Punkte in Pixel)
@@ -840,7 +872,7 @@ void setup()
   // Clear the screen before writing to it
   tft.fillScreen(TFT_BLACK);
   tft.setFreeFont(&seven_regular11pt7b);
-  tft.drawString("CALENDAR V1.2", 0, 0);
+  tft.drawString("CALENDAR V1.3", 0, 0);
 
   // STARTET den Bluetooth-Funk der Tastatur
   bleKeyboard.setLogLevel(HIDLogLevel::Normal);
