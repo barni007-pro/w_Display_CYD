@@ -125,12 +125,28 @@ List of school holidays for Year1. (Date,...)
 List of school holidays for Year2. (Date,...)
 ### layout=
 CYD Macro Pad Keyboard Layout US/DE
-### key1= ... key8=
-Macro Pad label and macro <br>
-Label (single-line "Text") (two-line "Text1/Text2") <br>
-Separator between label and macro "," <br>
-Macro (characters or [TAB] [RET]) <br>
-Example: key1=Win/Passw,user[TAB]password[RET]
+### key1= ... Key8=
+**Configuring macro keys (`key1` to `key8`)** <br>
+The assignment of the physical keys is defined directly in the `config.txt` file. <br>
+Each key requires a label for the display and the actual macro sequence, separated by a comma `,`. <br>
+The label can be displayed on one or two lines (first line/second line). <br>
+**Syntax:**
+```text
+keyX=Label,Macro-Sequence
+```
+**Example:**
+```text
+key1=Win/Passw,user[TAB]password[RET]
+```
+**All control codes**
+```text
+[TAB],Presses the Tab key
+[RET],Presses the Enter/Return key
+[F01]-[F24],Presses the function keys F1 to F24
+[S01]-[S24],Presses Shift + function key (e.g., [S13] for Shift+F13)
+[C01]-[C24],Presses Ctrl (Control) + function key (e.g., [C13] for Ctrl+F13)
+[A01]-[A24],Presses Alt + function key (e.g., [A13] for Alt+F13)
+```
 
 ## Touch Operation:
 ![Operation](Touch_Kal.jpg)  <br>
