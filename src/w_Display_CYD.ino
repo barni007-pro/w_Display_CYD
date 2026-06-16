@@ -69,9 +69,12 @@ int function = 0; //0:CAL 1:CLOCK 2:KEYBOARD
 HijelHID_BLEKeyboard bleKeyboard("CYD MacroPad", "Espressif", 100);
 
 // Array zum Speichern der 8 Makro-Strings von der SD-Karte
-String macroStrings[8] = {"", "", "", "", "", "", "", ""};
+String macroStrings[24];
 // Array für die Beschriftungen der Buttons
-String macroNames[8] = {"M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8"};
+String macroNamesL1[24]; 
+String macroNamesL2[24];
+// Seiten-Zähler (0 = Seite 1, 1 = Seite 2, 2 = Seite 3, 3 = Seite 4)
+int currentMacroPage = 0;
 
 String keyboardLayout = "DE"; // Standardmäßig auf Deutsch eingestellt
 
@@ -384,6 +387,7 @@ void draw_cal(uint16_t y, uint8_t m, uint8_t d)
 }
 
 // Funktion: Zeichnet die 3. Seite (Makro-Tastatur)
+// Funktion: Zeichnet die Makro-Seite (4 Seiten mit jeweils 6 Tasten + Navigation)
 void drawMacroPage() {
   tft.fillScreen(TFT_BLACK);
   
@@ -393,46 +397,63 @@ void drawMacroPage() {
 
   for (int row = 0; row < 3; row++) {
     for (int col = 0; col < 3; col++) {
-      int index = row * 3 + col;
+      int index = row * 3 + col; // Grid-Index (0 bis 8)
       int x = spacing + col * (btnWidth + spacing);
       int y = spacing + row * (btnHeight + spacing);
       
       int centerX = x + (btnWidth / 2);
       int centerY = y + (btnHeight / 2);
       
-      if (index < 8) {
-        // Makro Buttons 1 bis 8 (Blau)
+      // Spalte 1 & 2 der ersten beiden Reihen = Die 6 Makro-Buttons (Index 0 bis 5)
+      if (index < 6) {
+        // Berechne den echten Index im 24er-Array
+        int macroIndex = (currentMacroPage * 6) + index;
+
         tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_NAVY);
         tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_BLUE);
         tft.setTextColor(TFT_WHITE);
-        
-        String name = macroNames[index];
-        int slashIndex = name.indexOf('/');
-        
-        // Beide Modi laufen jetzt auf Textgröße 2
         tft.setTextSize(2);
         
-        if (slashIndex != -1) {
-          // ZWEIZEILIG: Text splitten, aber TextSize bleibt groß (2)
-          String line1 = name.substring(0, slashIndex);
-          String line2 = name.substring(slashIndex + 1);
-          line1.trim();
-          line2.trim();
-          
-          // Abstand leicht vergrößert (+/- 12 statt 10), damit die große Schrift Platz hat
+        String line1 = macroNamesL1[macroIndex];
+        String line2 = macroNamesL2[macroIndex];
+        
+        // Falls der Platz in der config.txt leer ist
+        if (line1.length() == 0) line1 = "-Frei-";
+
+        if (line2.length() > 0) {
+          // Zweizeiliger Text
           tft.drawString(line1, centerX, centerY - 12);
           tft.drawString(line2, centerX, centerY + 12);
         } else {
-          // EINZEILIG: In die exakte Mitte
-          tft.drawString(name, centerX, centerY);
+          // Einzeiliger Text
+          tft.drawString(line1, centerX, centerY);
         }
-      } else {
-        // 9. Button: Zurück (Rot)
+      } 
+      // Unterste Reihe, links (Index 6): Seite ZURÜCK
+      else if (index == 6) {
+        tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, createColor(60, 60, 60));
+        tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_WHITE);
+        tft.setTextColor(TFT_WHITE);
+        tft.setTextSize(2);
+        tft.drawString("<- Pag", centerX, centerY);
+      } 
+      // Unterste Reihe, mitte (Index 7): Seite VOR
+      else if (index == 7) {
+        tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, createColor(60, 60, 60));
+        tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_WHITE);
+        tft.setTextColor(TFT_WHITE);
+        tft.setTextSize(2);
+        // Zeigt direkt die aktuelle Seite auf dem Button an (z.B. "Pag 1->")
+        String pageStr = "P." + String(currentMacroPage + 1) + " ->";
+        tft.drawString(pageStr, centerX, centerY);
+      } 
+      // Unterste Reihe, rechts (Index 8): Zurück zum Kalender
+      else if (index == 8) {
         tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_MAROON);
         tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_RED);
         tft.setTextColor(TFT_WHITE);
         tft.setTextSize(2);
-        tft.drawString("ZURUECK", centerX, centerY);
+        tft.drawString("BACK", centerX, centerY);
       }
     }
   }
@@ -611,6 +632,7 @@ void sendMacroSequence(String seq) {
 }
 
 // Funktion: Überprüft Touch auf der Makro-Seite (Konvertiert rohe TS-Punkte in Pixel)
+// Funktion: Überprüft Touch auf der Makro-Seite im 3x3 Raster
 void handleMacroPageTouch(int pixelX, int pixelY) {
   tft.setFreeFont(NULL);
   tft.setTextFont(1);
@@ -625,47 +647,69 @@ void handleMacroPageTouch(int pixelX, int pixelY) {
       int centerX = x + (btnWidth / 2);
       int centerY = y + (btnHeight / 2);
 
+      // Prüfen, ob der Touch-Punkt innerhalb des aktuellen Buttons liegt
       if (pixelX >= x && pixelX <= (x + btnWidth) && pixelY >= y && pixelY <= (y + btnHeight)) {
-        if (index < 8) {
-          Serial.printf("Button '%s' gedrueckt. Sende Makro...\n", macroNames[index].c_str());
+        
+        // FALL 1: Eines der 6 Makros wurde gedrückt (Index 0 bis 5)
+        if (index < 6) {
+          int macroIndex = (currentMacroPage * 6) + index;
           
-          String name = macroNames[index];
-          int slashIndex = name.indexOf('/');
-          
-          // ─── VISUELLES FEEDBACK (ORANGE) ───
-          tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, createColor(255, 165, 0));
-          tft.setTextColor(TFT_BLACK);
-          tft.setTextSize(2); // Große Schrift beim Drücken erzeugen
-          
-          if (slashIndex != -1) {
-            tft.drawString(name.substring(0, slashIndex), centerX, centerY - 12);
-            tft.drawString(name.substring(slashIndex + 1), centerX, centerY + 12);
-          } else {
-            tft.drawString(name, centerX, centerY);
-          }
-          
-          // Makro senden
-          sendMacroSequence(macroStrings[index]);
-          
-          // Warte auf Touch-Release (Stift wird abgehoben)
-          while (ts.touched()) { delay(10); }
-          
-          // ─── RESET IN DEN NORMALZUSTAND (BLAU) ───
-          tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_NAVY);
-          tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_BLUE);
-          tft.setTextColor(TFT_WHITE);
-          
-          if (slashIndex != -1) {
-            // SICHERHEITSHAKEN: TextSize unmittelbar vor dem Zeichnen erneut erzwingen!
-            tft.setTextSize(2); 
-            tft.drawString(name.substring(0, slashIndex), centerX, centerY - 12);
-            tft.setTextSize(2); 
-            tft.drawString(name.substring(slashIndex + 1), centerX, centerY + 12);
-          } else {
+          // Nur senden, wenn auch wirklich Text hinterlegt ist
+          if (macroStrings[macroIndex].length() > 0) {
+            Serial.printf("Button '%s' gedrueckt. Sende Makro...\n", macroNamesL1[macroIndex].c_str());
+            
+            // Visuelles Feedback (Orange)
+            tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, createColor(255, 165, 0));
+            tft.setTextColor(TFT_BLACK);
             tft.setTextSize(2);
-            tft.drawString(name, centerX, centerY);
+            
+            if (macroNamesL2[macroIndex].length() > 0) {
+              tft.drawString(macroNamesL1[macroIndex], centerX, centerY - 12);
+              tft.drawString(macroNamesL2[macroIndex], centerX, centerY + 12);
+            } else {
+              tft.drawString(macroNamesL1[macroIndex], centerX, centerY);
+            }
+            
+            // Makro über Bluetooth abfeuern
+            sendMacroSequence(macroStrings[macroIndex]);
+            
+            // Warten bis der Stift/Finger abgehoben wird
+            while (ts.touched()) { delay(10); }
+            
+            // Button zurück in den Normalzustand versetzen (Blau)
+            tft.fillRoundRect(x, y, btnWidth, btnHeight, 6, TFT_NAVY);
+            tft.drawRoundRect(x, y, btnWidth, btnHeight, 6, TFT_BLUE);
+            tft.setTextColor(TFT_WHITE);
+            tft.setTextSize(2);
+            
+            if (macroNamesL2[macroIndex].length() > 0) {
+              tft.drawString(macroNamesL1[macroIndex], centerX, centerY - 12);
+              tft.drawString(macroNamesL2[macroIndex], centerX, centerY + 12);
+            } else {
+              tft.drawString(macroNamesL1[macroIndex], centerX, centerY);
+            }
           }
-        } else {
+        } 
+        // FALL 2: Navigation - EINE SEITE ZURÜCK (Index 6)
+        else if (index == 6) {
+          currentMacroPage--;
+          if (currentMacroPage < 0) currentMacroPage = 3; // Von Seite 1 zurück auf Seite 4
+          
+          Serial.printf("Wechsle zurück zu Makro-Seite %d\n", currentMacroPage + 1);
+          while (ts.touched()) { delay(10); }
+          drawMacroPage(); // Bildschirm mit neuen Makro-Namen neu aufbauen
+        } 
+        // FALL 3: Navigation - EINE SEITE VOR (Index 7)
+        else if (index == 7) {
+          currentMacroPage++;
+          if (currentMacroPage > 3) currentMacroPage = 0; // Von Seite 4 vor auf Seite 1
+          
+          Serial.printf("Wechsle vor zu Makro-Seite %d\n", currentMacroPage + 1);
+          while (ts.touched()) { delay(10); }
+          drawMacroPage(); // Bildschirm mit neuen Makro-Namen neu aufbauen
+        } 
+        // FALL 4: MENU / ZURÜCK ZUM KALENDER (Index 8)
+        else if (index == 8) {
           Serial.println("Zurueck-Button gedrueckt -> Gehe zu Kalender");
           function = 0;
           while (ts.touched()) { delay(10); }
@@ -769,19 +813,35 @@ void parseConfigLine(String line)
     schoolhol[2] = value;
   } 
   // ─── NEU: Makro-Tasten key1 bis key8 einlesen ───
+// GEÄNDERT: Jetzt bis zu 24 Makro-Tasten von der SD-Karte einlesen
   else if (key.startsWith("key")) {
     int keyNum = key.substring(3).toInt();
-    if (keyNum >= 1 && keyNum <= 8) {
-      int index = keyNum - 1;
+    if (keyNum >= 1 && keyNum <= 24) { // Limit von 8 auf 24 erhöht
+      int index = keyNum - 1;          // Array-Index läuft jetzt von 0 bis 23
       int commaIndex = value.indexOf(',');
+      
       if (commaIndex != -1) {
-        macroNames[index] = value.substring(0, commaIndex);
+        String fullLabel = value.substring(0, commaIndex);
         macroStrings[index] = value.substring(commaIndex + 1);
-        macroNames[index].trim();
+        fullLabel.trim();
+        
+        int slashIndex = fullLabel.indexOf('/');
+        if (slashIndex != -1) {
+          macroNamesL1[index] = fullLabel.substring(0, slashIndex);
+          macroNamesL2[index] = fullLabel.substring(slashIndex + 1);
+          macroNamesL1[index].trim();
+          macroNamesL2[index].trim();
+        } else {
+          macroNamesL1[index] = fullLabel;
+          macroNamesL2[index] = "";
+        }
       } else {
-        macroNames[index] = value;
+        macroNamesL1[index] = value;
+        macroNamesL2[index] = "";
         macroStrings[index] = "";
       }
+      Serial.printf("[SD-Card] Key %d -> L1: '%s', L2: '%s', Seq: '%s'\n", 
+                    keyNum, macroNamesL1[index].c_str(), macroNamesL2[index].c_str(), macroStrings[index].c_str());
     }
   }
 }
