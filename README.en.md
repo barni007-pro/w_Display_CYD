@@ -125,8 +125,8 @@ List of school holidays for Year1. (Date,...)
 List of school holidays for Year2. (Date,...)
 ### layout=
 CYD Macro Pad Keyboard Layout US/DE
-### key1= ... Key8=
-**Configuring macro keys (`key1` to `key8`)** <br>
+### key1= ... Key24=
+**Configuring macro keys (`key1` to `key24`)** <br>
 The assignment of the physical keys is defined directly in the `config.txt` file. <br>
 Each key requires a label for the display and the actual macro sequence, separated by a comma `,`. <br>
 The label can be displayed on one or two lines (first line/second line). <br>
